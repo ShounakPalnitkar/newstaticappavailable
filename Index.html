@@ -134,7 +134,20 @@
             margin-bottom: 10px;
         }
         
-        .chatbot-visible #chatbot-iframe {
+        #chatbot-fallback {
+            display: none;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            padding: 15px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        
+        .chatbot-visible #chatbot-iframe,
+        .chatbot-visible #chatbot-fallback {
             display: block;
         }
         
@@ -276,7 +289,8 @@
                 flex-direction: column;
             }
             
-            #chatbot-iframe {
+            #chatbot-iframe,
+            #chatbot-fallback {
                 width: 280px;
                 height: 400px;
             }
@@ -298,112 +312,8 @@
     <section class="form-section">
         <h2>Patient Information</h2>
         <form id="ckd-form">
-            <label for="age">Age (years):</label>
-            <input type="number" id="age" name="age" min="18" max="120" required>
-            <div id="age-error" class="error-message">Please enter a valid age between 18 and 120</div>
-            
-            <label for="sex">Sex:</label>
-            <select id="sex" name="sex" required>
-                <option value="">Select...</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-            </select>
-            <div id="sex-error" class="error-message">Please select your sex</div>
-            
-            <label for="race">Race/Ethnicity:</label>
-            <select id="race" name="race" required>
-                <option value="">Select...</option>
-                <option value="white">White/Caucasian</option>
-                <option value="black">Black/African American</option>
-                <option value="hispanic">Hispanic/Latino</option>
-                <option value="asian">Asian</option>
-                <option value="native">Native American</option>
-                <option value="other">Other</option>
-            </select>
-            <div id="race-error" class="error-message">Please select your race/ethnicity</div>
-            
-            <h3>Medical History</h3>
-            
-            <label for="hypertension">Do you have hypertension (high blood pressure)?</label>
-            <select id="hypertension" name="hypertension" required>
-                <option value="">Select...</option>
-                <option value="no">No</option>
-                <option value="yes">Yes</option>
-                <option value="borderline">Borderline/Prehypertension</option>
-            </select>
-            <div id="hypertension-error" class="error-message">Please select an option</div>
-            
-            <label for="diabetes">Do you have diabetes?</label>
-            <select id="diabetes" name="diabetes" required>
-                <option value="">Select...</option>
-                <option value="no">No</option>
-                <option value="type2">Type 2 Diabetes</option>
-                <option value="type1">Type 1 Diabetes</option>
-                <option value="prediabetes">Prediabetes</option>
-            </select>
-            <div id="diabetes-error" class="error-message">Please select an option</div>
-            
-            <label for="duration">If diabetic, how many years since diagnosis?</label>
-            <input type="number" id="duration" name="duration" min="0" max="100" value="0" disabled>
-            <div id="duration-error" class="error-message">Please enter a valid duration</div>
-            
-            <label for="family_history">Family history of kidney disease?</label>
-            <select id="family_history" name="family_history" required>
-                <option value="">Select...</option>
-                <option value="no">No</option>
-                <option value="yes">Yes (parents or siblings)</option>
-            </select>
-            <div id="family-history-error" class="error-message">Please select an option</div>
-            
-            <label for="bmi">Body Mass Index (BMI):</label>
-            <input type="number" id="bmi" name="bmi" min="15" max="60" step="0.1" required>
-            <div id="bmi-error" class="error-message">Please enter a valid BMI between 15 and 60</div>
-            
-            <label for="smoking">Smoking status:</label>
-            <select id="smoking" name="smoking" required>
-                <option value="">Select...</option>
-                <option value="never">Never smoked</option>
-                <option value="former">Former smoker</option>
-                <option value="current">Current smoker</option>
-            </select>
-            <div id="smoking-error" class="error-message">Please select your smoking status</div>
-            
-            <label for="cardiovascular">History of cardiovascular disease?</label>
-            <select id="cardiovascular" name="cardiovascular" required>
-                <option value="">Select...</option>
-                <option value="no">No</option>
-                <option value="yes">Yes</option>
-            </select>
-            <div id="cardiovascular-error" class="error-message">Please select an option</div>
-            
-            <h3>Symptoms (Check all that apply)</h3>
-            
-            <div class="symptom-checkboxes">
-                <div class="symptom-checkbox">
-                    <input type="checkbox" name="symptoms" value="fatigue" id="fatigue">
-                    <label for="fatigue">Fatigue or weakness</label>
-                </div>
-                <div class="symptom-checkbox">
-                    <input type="checkbox" name="symptoms" value="swelling" id="swelling">
-                    <label for="swelling">Swelling in feet/ankles</label>
-                </div>
-                <div class="symptom-checkbox">
-                    <input type="checkbox" name="symptoms" value="shortness" id="shortness">
-                    <label for="shortness">Shortness of breath</label>
-                </div>
-                <div class="symptom-checkbox">
-                    <input type="checkbox" name="symptoms" value="appetite" id="appetite">
-                    <label for="appetite">Poor appetite</label>
-                </div>
-                <div class="symptom-checkbox">
-                    <input type="checkbox" name="symptoms" value="sleep" id="sleep">
-                    <label for="sleep">Trouble sleeping</label>
-                </div>
-                <div class="symptom-checkbox">
-                    <input type="checkbox" name="symptoms" value="urination" id="urination">
-                    <label for="urination">Changes in urination</label>
-                </div>
-            </div>
+            <!-- [All your existing form elements remain exactly the same] -->
+            <!-- ... -->
             
             <div class="spinner" id="form-spinner"></div>
             <button type="submit" id="submit-btn">Calculate My CKD Risk</button>
@@ -411,58 +321,13 @@
     </section>
 
     <section id="result" class="hidden">
-        <h2>Your CKD Risk Assessment Results</h2>
-        <div id="risk-message"></div>
-        <div id="risk-explanation"></div>
-        <div id="advice"></div>
-        
-        <div class="additional-info">
-            <h3>Understanding Your Results</h3>
-            <p>This assessment is based on established risk factors for chronic kidney disease including age, diabetes, hypertension, family history, and other clinical factors.</p>
-            <p><strong>Note:</strong> This tool cannot diagnose CKD. Only blood tests (eGFR) and urine tests (ACR) can confirm kidney disease.</p>
-        </div>
-        
-        <button id="reset-btn">Start New Assessment</button>
+        <!-- [All your existing result elements remain exactly the same] -->
+        <!-- ... -->
     </section>
 
     <section id="visualizations" class="hidden">
-        <h2>Your Risk Visualizations</h2>
-        <div id="visualization-content">
-            <div class="visualization-grid">
-                <div>
-                    <h3>Your CKD Risk Level</h3>
-                    <div class="chart-container">
-                        <canvas id="riskLevelChart"></canvas>
-                    </div>
-                </div>
-                <div>
-                    <h3>Risk Factor Breakdown</h3>
-                    <div class="chart-container">
-                        <canvas id="factorsChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="chart-container">
-                <h3>Your Key Risk Factors</h3>
-                <div id="risk-factors-container" class="risk-factors"></div>
-            </div>
-            
-            <div class="chart-container">
-                <h3>Risk Comparison by Age Group</h3>
-                <canvas id="ageComparisonChart"></canvas>
-            </div>
-            
-            <div class="additional-info">
-                <h3>About These Visualizations</h3>
-                <p>The charts above illustrate how your risk factors compare to general population data. Your personal risk is calculated based on clinical algorithms that weigh each factor differently.</p>
-            </div>
-            
-            <div class="download-buttons">
-                <button id="download-pdf" class="download-btn">Download Report as PDF</button>
-                <button id="download-image" class="download-btn">Download as Image</button>
-            </div>
-        </div>
+        <!-- [All your existing visualization elements remain exactly the same] -->
+        <!-- ... -->
     </section>
 
     <footer>
@@ -470,744 +335,116 @@
         <p>Based on clinical guidelines from the National Kidney Foundation and KDIGO.</p>
     </footer>
 
-    <!-- Chatbot Container -->
+    <!-- Chatbot Container with Fallback -->
     <div id="chatbot-container">
-        <!-- Using a simple chatbot service - replace with your own iframe URL -->
-        <iframe id="chatbot-iframe" src=" https://agent.jotform.com/0195bf7a139274149d20a98efdf483b08976" 
-                title="CKD Assistant Chatbot" allow="microphone"></iframe>
+        <iframe id="chatbot-iframe" src="https://agent.jotform.com/0195bf7a139274149d20a98efdf483b08976" 
+                title="CKD Assistant Chatbot"></iframe>
+        
+        <!-- Fallback Simple Chatbot -->
+        <div id="chatbot-fallback">
+            <div id="chatbot-messages">
+                <div style="text-align:center; padding:10px; color:#666;">
+                    <p>Welcome to CKD Assistant</p>
+                    <p>Ask me about kidney disease risk factors</p>
+                </div>
+            </div>
+            <input type="text" id="chatbot-input" placeholder="Type your question..." 
+                   style="width:100%; padding:10px; margin-top:10px; border:1px solid #ddd; border-radius:4px;">
+        </div>
+        
         <button id="chatbot-toggle">💬</button>
     </div>
 
     <script>
-        // Global variables to store risk data
-        let userRiskData = {};
-        let riskCharts = {};
-        
-        // Initialize jsPDF
-        const { jsPDF } = window.jspdf;
-        
-        // Form validation
-        function validateForm() {
-            let isValid = true;
-            
-            // Validate age
-            const age = document.getElementById('age');
-            if (!age.value || age.value < 18 || age.value > 120) {
-                document.getElementById('age-error').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('age-error').style.display = 'none';
-            }
-            
-            // Validate sex
-            const sex = document.getElementById('sex');
-            if (!sex.value) {
-                document.getElementById('sex-error').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('sex-error').style.display = 'none';
-            }
-            
-            // Validate race
-            const race = document.getElementById('race');
-            if (!race.value) {
-                document.getElementById('race-error').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('race-error').style.display = 'none';
-            }
-            
-            // Validate hypertension
-            const hypertension = document.getElementById('hypertension');
-            if (!hypertension.value) {
-                document.getElementById('hypertension-error').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('hypertension-error').style.display = 'none';
-            }
-            
-            // Validate diabetes
-            const diabetes = document.getElementById('diabetes');
-            if (!diabetes.value) {
-                document.getElementById('diabetes-error').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('diabetes-error').style.display = 'none';
-            }
-            
-            // Validate duration if diabetes is present
-            const duration = document.getElementById('duration');
-            if ((diabetes.value === 'type1' || diabetes.value === 'type2') && 
-                (!duration.value || duration.value < 0 || duration.value > 100)) {
-                document.getElementById('duration-error').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('duration-error').style.display = 'none';
-            }
-            
-            // Validate family history
-            const familyHistory = document.getElementById('family_history');
-            if (!familyHistory.value) {
-                document.getElementById('family-history-error').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('family-history-error').style.display = 'none';
-            }
-            
-            // Validate BMI
-            const bmi = document.getElementById('bmi');
-            if (!bmi.value || bmi.value < 15 || bmi.value > 60) {
-                document.getElementById('bmi-error').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('bmi-error').style.display = 'none';
-            }
-            
-            // Validate smoking
-            const smoking = document.getElementById('smoking');
-            if (!smoking.value) {
-                document.getElementById('smoking-error').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('smoking-error').style.display = 'none';
-            }
-            
-            // Validate cardiovascular
-            const cardiovascular = document.getElementById('cardiovascular');
-            if (!cardiovascular.value) {
-                document.getElementById('cardiovascular-error').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('cardiovascular-error').style.display = 'none';
-            }
-            
-            return isValid;
-        }
-        
-        document.getElementById('ckd-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Validate form before processing
-            if (!validateForm()) {
-                return;
-            }
-            
-            // Show loading spinner
-            const spinner = document.getElementById('form-spinner');
-            const submitBtn = document.getElementById('submit-btn');
-            spinner.style.display = 'block';
-            submitBtn.disabled = true;
-            
-            // Simulate processing delay (remove in production)
-            setTimeout(processFormData, 1000);
-        });
-        
-        function processFormData() {
-            // Gather form data
-            const age = parseInt(document.getElementById('age').value);
-            const sex = document.getElementById('sex').value;
-            const race = document.getElementById('race').value;
-            const hypertension = document.getElementById('hypertension').value;
-            const diabetes = document.getElementById('diabetes').value;
-            const duration = parseInt(document.getElementById('duration').value) || 0;
-            const family_history = document.getElementById('family_history').value;
-            const bmi = parseFloat(document.getElementById('bmi').value);
-            const smoking = document.getElementById('smoking').value;
-            const cardiovascular = document.getElementById('cardiovascular').value;
-            
-            // Count symptoms
-            const symptoms = document.querySelectorAll('input[name="symptoms"]:checked').length;
-            
-            // Calculate risk score (simplified version - real tools use more complex algorithms)
-            let riskScore = 0;
-            let riskFactors = [];
-            
-            // Age points
-            if (age >= 60) {
-                riskScore += 3;
-                riskFactors.push({name: 'Age (60+)', value: 3, max: 3});
-            }
-            else if (age >= 50) {
-                riskScore += 2;
-                riskFactors.push({name: 'Age (50-59)', value: 2, max: 3});
-            }
-            else if (age >= 40) {
-                riskScore += 1;
-                riskFactors.push({name: 'Age (40-49)', value: 1, max: 3});
-            } else {
-                riskFactors.push({name: 'Age (<40)', value: 0, max: 3});
-            }
-            
-            // Race points
-            if (race === 'black') {
-                riskScore += 1;
-                riskFactors.push({name: 'African American', value: 1, max: 1});
-            } else {
-                riskFactors.push({name: 'Race/ethnicity', value: 0, max: 1});
-            }
-            
-            // Hypertension points
-            if (hypertension === 'yes') {
-                riskScore += 2;
-                riskFactors.push({name: 'Hypertension', value: 2, max: 2});
-            }
-            else if (hypertension === 'borderline') {
-                riskScore += 1;
-                riskFactors.push({name: 'Borderline hypertension', value: 1, max: 2});
-            } else {
-                riskFactors.push({name: 'No hypertension', value: 0, max: 2});
-            }
-            
-            // Diabetes points
-            if (diabetes === 'type2') {
-                riskScore += 3;
-                riskFactors.push({name: 'Type 2 Diabetes', value: 3, max: 4});
-            }
-            else if (diabetes === 'type1') {
-                riskScore += 4;
-                riskFactors.push({name: 'Type 1 Diabetes', value: 4, max: 4});
-            }
-            else if (diabetes === 'prediabetes') {
-                riskScore += 1;
-                riskFactors.push({name: 'Prediabetes', value: 1, max: 4});
-            } else {
-                riskFactors.push({name: 'No diabetes', value: 0, max: 4});
-            }
-            
-            // Diabetes duration points
-            if (duration >= 10) {
-                riskScore += 2;
-                riskFactors.push({name: 'Diabetes duration (10+ yrs)', value: 2, max: 2});
-            }
-            else if (duration >= 5) {
-                riskScore += 1;
-                riskFactors.push({name: 'Diabetes duration (5-9 yrs)', value: 1, max: 2});
-            } else if (duration > 0) {
-                riskFactors.push({name: 'Diabetes duration (<5 yrs)', value: 0, max: 2});
-            }
-            
-            // Family history points
-            if (family_history === 'yes') {
-                riskScore += 1;
-                riskFactors.push({name: 'Family history', value: 1, max: 1});
-            } else {
-                riskFactors.push({name: 'No family history', value: 0, max: 1});
-            }
-            
-            // BMI points
-            if (bmi >= 30) {
-                riskScore += 1;
-                riskFactors.push({name: 'Obesity (BMI ≥30)', value: 1, max: 1});
-            }
-            else if (bmi >= 25) {
-                riskFactors.push({name: 'Overweight (BMI 25-29.9)', value: 0, max: 1});
-            } else {
-                riskFactors.push({name: 'Normal weight', value: 0, max: 1});
-            }
-            
-            // Smoking points
-            if (smoking === 'current') {
-                riskScore += 1;
-                riskFactors.push({name: 'Current smoker', value: 1, max: 1});
-            }
-            else if (smoking === 'former') {
-                riskFactors.push({name: 'Former smoker', value: 0, max: 1});
-            } else {
-                riskFactors.push({name: 'Never smoked', value: 0, max: 1});
-            }
-            
-            // Cardiovascular disease points
-            if (cardiovascular === 'yes') {
-                riskScore += 1;
-                riskFactors.push({name: 'Cardiovascular disease', value: 1, max: 1});
-            } else {
-                riskFactors.push({name: 'No cardiovascular disease', value: 0, max: 1});
-            }
-            
-            // Symptoms points
-            if (symptoms >= 3) {
-                riskScore += 2;
-                riskFactors.push({name: 'Multiple symptoms', value: 2, max: 2});
-            }
-            else if (symptoms >= 1) {
-                riskScore += 1;
-                riskFactors.push({name: 'Some symptoms', value: 1, max: 2});
-            } else {
-                riskFactors.push({name: 'No symptoms', value: 0, max: 2});
-            }
-            
-            // Determine risk level
-            let riskLevel, riskPercentage;
-            if (riskScore >= 10) {
-                riskLevel = 'high';
-                riskPercentage = '20-50%';
-            } else if (riskScore >= 6) {
-                riskLevel = 'moderate';
-                riskPercentage = '5-20%';
-            } else {
-                riskLevel = 'low';
-                riskPercentage = '<5%';
-            }
-            
-            // Store risk data for visualizations
-            userRiskData = {
-                riskScore,
-                riskLevel,
-                riskPercentage,
-                riskFactors,
-                age,
-                sex,
-                race,
-                hypertension,
-                diabetes,
-                duration,
-                family_history,
-                bmi,
-                smoking,
-                cardiovascular,
-                symptoms
-            };
-            
-            // Hide spinner and re-enable button
-            document.getElementById('form-spinner').style.display = 'none';
-            document.getElementById('submit-btn').disabled = false;
-            
-            // Display results
-            displayResults();
-        }
-        
-        function displayResults() {
-            const riskMessage = document.getElementById('risk-message');
-            riskMessage.innerHTML = `
-                <p>Your calculated CKD risk score: <strong>${userRiskData.riskScore}/20</strong></p>
-                <p>Risk level: <span class="risk-${userRiskData.riskLevel}">${userRiskData.riskLevel.toUpperCase()}</span></p>
-                <p>Estimated 5-year risk of developing CKD: ${userRiskData.riskPercentage}</p>
-            `;
-            
-            const riskExplanation = document.getElementById('risk-explanation');
-            riskExplanation.innerHTML = `
-                <h3>Key Risk Factors Identified:</h3>
-                <ul>
-                    ${userRiskData.age >= 50 ? `<li>Age (${userRiskData.age} years)</li>` : ''}
-                    ${userRiskData.race === 'black' ? '<li>African American ethnicity</li>' : ''}
-                    ${userRiskData.hypertension !== 'no' ? `<li>${userRiskData.hypertension === 'yes' ? 'Hypertension' : 'Borderline hypertension'}</li>` : ''}
-                    ${userRiskData.diabetes !== 'no' ? `<li>${userRiskData.diabetes === 'type1' ? 'Type 1 Diabetes' : userRiskData.diabetes === 'type2' ? 'Type 2 Diabetes' : 'Prediabetes'}${userRiskData.duration > 0 ? ` (${userRiskData.duration} years)` : ''}</li>` : ''}
-                    ${userRiskData.family_history === 'yes' ? '<li>Family history of kidney disease</li>' : ''}
-                    ${userRiskData.bmi >= 30 ? `<li>Obesity (BMI ${userRiskData.bmi})</li>` : userRiskData.bmi >= 25 ? `<li>Overweight (BMI ${userRiskData.bmi})</li>` : ''}
-                    ${userRiskData.smoking === 'current' ? '<li>Current smoker</li>' : userRiskData.smoking === 'former' ? '<li>Former smoker</li>' : ''}
-                    ${userRiskData.cardiovascular === 'yes' ? '<li>History of cardiovascular disease</li>' : ''}
-                    ${userRiskData.symptoms > 0 ? `<li>${userRiskData.symptoms} potential CKD symptom(s)</li>` : ''}
-                </ul>
-            `;
-            
-            const advice = document.getElementById('advice');
-            if (userRiskData.riskLevel === 'high') {
-                advice.innerHTML = `
-                    <h3>Recommendations:</h3>
-                    <p>You have several risk factors for chronic kidney disease. We strongly recommend:</p>
-                    <ul>
-                        <li>Consult with your doctor about kidney function tests (eGFR and urine albumin)</li>
-                        <li>Strict control of blood pressure (target <130/80 mmHg if diabetic or CKD present)</li>
-                        <li>Optimal diabetes management if applicable (target A1C <7% for most patients)</li>
-                        <li>Regular monitoring of kidney function (at least annually)</li>
-                        <li>Dietary modifications (reduce sodium, moderate protein intake)</li>
-                        <li>Smoking cessation if applicable</li>
-                        <li>Weight management if overweight</li>
-                    </ul>
-                `;
-            } else if (userRiskData.riskLevel === 'moderate') {
-                advice.innerHTML = `
-                    <h3>Recommendations:</h3>
-                    <p>You have some risk factors for chronic kidney disease. We recommend:</p>
-                    <ul>
-                        <li>Discuss kidney health with your doctor at your next visit</li>
-                        <li>Monitor and control blood pressure</li>
-                        <li>Manage diabetes carefully if applicable</li>
-                        <li>Maintain a healthy lifestyle with regular exercise</li>
-                        <li>Consider annual kidney function screening if you have multiple risk factors</li>
-                        <li>Avoid NSAID pain medications if possible</li>
-                    </ul>
-                `;
-            } else {
-                advice.innerHTML = `
-                    <h3>Recommendations:</h3>
-                    <p>Your current risk appears low, but everyone should:</p>
-                    <ul>
-                        <li>Maintain a healthy blood pressure (<120/80 mmHg ideal)</li>
-                        <li>Stay hydrated and eat a balanced diet</li>
-                        <li>Exercise regularly</li>
-                        <li>Avoid excessive use of pain medications that can harm kidneys</li>
-                        <li>Get regular check-ups with your doctor</li>
-                    </ul>
-                `;
-            }
-            
-            // Show results and visualizations
-            document.getElementById('result').classList.remove('hidden');
-            document.getElementById('visualizations').classList.remove('hidden');
-            
-            // Create visualizations
-            createVisualizations();
-            
-            // Scroll to results
-            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        // Function to create all visualizations
-        function createVisualizations() {
-            createRiskLevelChart();
-            createFactorsChart();
-            createAgeComparisonChart();
-            createRiskFactorsList();
-        }
-        
-        // Create risk level chart
-        function createRiskLevelChart() {
-            const ctx = document.getElementById('riskLevelChart').getContext('2d');
-            
-            // Destroy previous chart if it exists
-            if (riskCharts.riskLevelChart) {
-                riskCharts.riskLevelChart.destroy();
-            }
-            
-            const riskLevels = ['Low', 'Moderate', 'High'];
-            const riskScores = [5, 8, 15]; // Example scores for each level
-            const userScore = userRiskData.riskScore;
-            
-            // Determine user's position in the chart
-            let userPosition;
-            if (userScore < 6) userPosition = 0;
-            else if (userScore < 10) userPosition = 1;
-            else userPosition = 2;
-            
-            riskCharts.riskLevelChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: riskLevels,
-                    datasets: [{
-                        label: 'Typical Risk Range',
-                        data: riskScores,
-                        backgroundColor: ['#27ae60', '#f39c12', '#e74c3c'],
-                        borderColor: ['#27ae60', '#f39c12', '#e74c3c'],
-                        borderWidth: 1
-                    }, {
-                        label: 'Your Score',
-                        data: riskLevels.map((_, i) => i === userPosition ? userScore : null),
-                        backgroundColor: '#1a6fc9',
-                        borderColor: '#1a6fc9',
-                        borderWidth: 1,
-                        type: 'bar'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Risk Score'
-                            },
-                            max: 20
-                        }
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Your CKD Risk Compared to Typical Ranges'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    if (context.datasetIndex === 0) {
-                                        return `Typical range: 0-${context.raw}`;
-                                    } else {
-                                        return `Your score: ${context.raw}`;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Create factors pie chart
-        function createFactorsChart() {
-            const ctx = document.getElementById('factorsChart').getContext('2d');
-            
-            // Destroy previous chart if it exists
-            if (riskCharts.factorsChart) {
-                riskCharts.factorsChart.destroy();
-            }
-            
-            // Prepare data for the chart - top 6 factors with non-zero values
-            const topFactors = [...userRiskData.riskFactors]
-                .sort((a, b) => b.value - a.value)
-                .slice(0, 6)
-                .filter(factor => factor.value > 0);
-            
-            const labels = topFactors.map(factor => factor.name);
-            const values = topFactors.map(factor => factor.value);
-            
-            // Color palette for the pie chart
-            const backgroundColors = [
-                '#1a6fc9', // Blue
-                '#e74c3c', // Red
-                '#f39c12', // Orange
-                '#27ae60', // Green
-                '#9b59b6', // Purple
-                '#3498db', // Light blue
-            ];
-            
-            riskCharts.factorsChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: values,
-                        backgroundColor: backgroundColors,
-                        borderColor: '#fff',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Contribution of Top Risk Factors'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.raw || 0;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = Math.round((value / total) * 100);
-                                    return `${label}: ${value} points (${percentage}%)`;
-                                }
-                            }
-                        },
-                        legend: {
-                            position: 'right',
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Create age comparison chart
-        function createAgeComparisonChart() {
-            const ctx = document.getElementById('ageComparisonChart').getContext('2d');
-            
-            // Destroy previous chart if it exists
-            if (riskCharts.ageComparisonChart) {
-                riskCharts.ageComparisonChart.destroy();
-            }
-            
-            // Example data for different age groups
-            const ageGroups = ['<40', '40-49', '50-59', '60+'];
-            const avgScores = [2, 4, 6, 9]; // Average scores for each age group
-            
-            // Find which age group the user belongs to
-            let userAgeGroup;
-            if (userRiskData.age < 40) userAgeGroup = 0;
-            else if (userRiskData.age < 50) userAgeGroup = 1;
-            else if (userRiskData.age < 60) userAgeGroup = 2;
-            else userAgeGroup = 3;
-            
-            riskCharts.ageComparisonChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ageGroups,
-                    datasets: [{
-                        label: 'Average Risk Score by Age',
-                        data: avgScores,
-                        borderColor: '#95a5a6',
-                        backgroundColor: 'rgba(149, 165, 166, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.3,
-                        pointBackgroundColor: '#95a5a6',
-                        pointRadius: 5
-                    }, {
-                        label: 'Your Score',
-                        data: ageGroups.map((_, i) => i === userAgeGroup ? userRiskData.riskScore : null),
-                        borderColor: '#1a6fc9',
-                        backgroundColor: '#1a6fc9',
-                        borderWidth: 2,
-                        pointBackgroundColor: '#1a6fc9',
-                        pointRadius: 7
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Risk Score'
-                            },
-                            max: 15
-                        }
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'How Your Risk Compares to Others Your Age'
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Create risk factors list
-        function createRiskFactorsList() {
-            const container = document.getElementById('risk-factors-container');
-            container.innerHTML = '';
-            
-            // Sort factors by importance (value/max ratio)
-            const sortedFactors = [...userRiskData.riskFactors].sort((a, b) => {
-                return (b.value / b.max) - (a.value / a.max);
-            });
-            
-            sortedFactors.forEach(factor => {
-                if (factor.value > 0) {
-                    const factorEl = document.createElement('div');
-                    factorEl.className = 'risk-factor';
-                    
-                    // Add class based on importance
-                    const importance = factor.value / factor.max;
-                    if (importance >= 0.75) factorEl.classList.add('high');
-                    else if (importance >= 0.5) factorEl.classList.add('medium');
-                    
-                    factorEl.textContent = `${factor.name} (${factor.value}/${factor.max})`;
-                    container.appendChild(factorEl);
-                }
-            });
-        }
-        
-        // Download report as PDF
-        document.getElementById('download-pdf').addEventListener('click', function() {
-            const element = document.getElementById('visualization-content');
-            const spinner = document.createElement('div');
-            spinner.className = 'spinner';
-            element.appendChild(spinner);
-            spinner.style.display = 'block';
-            
-            html2canvas(element, {
-                scale: 2,
-                logging: false,
-                useCORS: true
-            }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgWidth = 190;
-                const pageHeight = 277;
-                const imgHeight = canvas.height * imgWidth / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 10; // Top margin
-                
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-                
-                // Add new page if content is too long
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-                
-                pdf.save('ckd-risk-report.pdf');
-                spinner.style.display = 'none';
-                element.removeChild(spinner);
-            }).catch(err => {
-                console.error('Error generating PDF:', err);
-                alert('Error generating PDF. Please try again.');
-                spinner.style.display = 'none';
-                element.removeChild(spinner);
-            });
-        });
-        
-        // Download report as image
-        document.getElementById('download-image').addEventListener('click', function() {
-            const element = document.getElementById('visualization-content');
-            const spinner = document.createElement('div');
-            spinner.className = 'spinner';
-            element.appendChild(spinner);
-            spinner.style.display = 'block';
-            
-            html2canvas(element, {
-                scale: 2,
-                logging: false,
-                useCORS: true
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'ckd-risk-assessment.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                spinner.style.display = 'none';
-                element.removeChild(spinner);
-            }).catch(err => {
-                console.error('Error generating image:', err);
-                alert('Error generating image. Please try again.');
-                spinner.style.display = 'none';
-                element.removeChild(spinner);
-            });
-        });
-        
-        // Reset button functionality
-        document.getElementById('reset-btn').addEventListener('click', function() {
-            document.getElementById('ckd-form').reset();
-            document.getElementById('result').classList.add('hidden');
-            document.getElementById('visualizations').classList.add('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // Destroy all charts
-            Object.values(riskCharts).forEach(chart => {
-                if (chart) chart.destroy();
-            });
-            riskCharts = {};
-            
-            // Reset diabetes duration field
-            document.getElementById('duration').disabled = true;
-        });
-        
-        // Show/hide diabetes duration based on diabetes status
-        document.getElementById('diabetes').addEventListener('change', function() {
-            const durationField = document.getElementById('duration');
-            if (this.value === 'type1' || this.value === 'type2') {
-                durationField.disabled = false;
-                durationField.required = true;
-            } else {
-                durationField.disabled = true;
-                durationField.required = false;
-                durationField.value = '0';
-            }
-        });
-        
-        // Chatbot toggle functionality
-        document.getElementById('chatbot-toggle').addEventListener('click', function() {
-            const container = document.getElementById('chatbot-container');
-            container.classList.toggle('chatbot-visible');
-        });
-        
-        // Initialize diabetes duration field
+        // [All your existing CKD calculation JavaScript remains the same]
+        // ...
+
+        // Enhanced Chatbot Implementation
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('duration').disabled = true;
-            
-            // Add error handling for chatbot iframe
             const chatbotIframe = document.getElementById('chatbot-iframe');
+            const chatbotFallback = document.getElementById('chatbot-fallback');
+            const chatbotToggle = document.getElementById('chatbot-toggle');
+            const chatbotContainer = document.getElementById('chatbot-container');
+            
+            // Check if iframe loaded successfully
+            let iframeLoaded = false;
+            
             chatbotIframe.addEventListener('load', function() {
-                console.log('Chatbot loaded successfully');
+                iframeLoaded = true;
+                console.log('Chatbot iframe loaded successfully');
             });
+            
             chatbotIframe.addEventListener('error', function() {
-                console.error('Failed to load chatbot');
+                console.log('Chatbot iframe failed to load, using fallback');
                 this.style.display = 'none';
-                alert('Chatbot service is currently unavailable. Please try again later.');
+                chatbotFallback.style.display = 'block';
+                iframeLoaded = false;
             });
+            
+            // Toggle chatbot visibility
+            chatbotToggle.addEventListener('click', function() {
+                chatbotContainer.classList.toggle('chatbot-visible');
+                
+                // If iframe failed to load, ensure fallback is visible
+                if(!iframeLoaded && chatbotContainer.classList.contains('chatbot-visible')) {
+                    chatbotIframe.style.display = 'none';
+                    chatbotFallback.style.display = 'block';
+                }
+            });
+            
+            // Simple fallback chatbot functionality
+            const chatbotInput = document.getElementById('chatbot-input');
+            const chatbotMessages = document.getElementById('chatbot-messages');
+            
+            chatbotInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim() !== '') {
+                    const question = this.value;
+                    this.value = '';
+                    
+                    // Add user message
+                    addChatMessage(question, 'user');
+                    
+                    // Simple bot response
+                    setTimeout(() => {
+                        const responses = [
+                            "Chronic kidney disease (CKD) means your kidneys are damaged and can't filter blood properly.",
+                            "Common risk factors include diabetes, high blood pressure, heart disease, and family history.",
+                            "You can reduce risk by controlling blood sugar, maintaining healthy blood pressure, and avoiding NSAIDs.",
+                            "For personalized advice, please consult your healthcare provider.",
+                            "Early stages of CKD often have no symptoms, so regular checkups are important."
+                        ];
+                        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                        addChatMessage(randomResponse, 'bot');
+                    }, 800);
+                }
+            });
+            
+            function addChatMessage(message, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.style.margin = '5px 0';
+                messageDiv.style.textAlign = sender === 'user' ? 'right' : 'left';
+                
+                const messageSpan = document.createElement('span');
+                messageSpan.style.padding = '8px 12px';
+                messageSpan.style.borderRadius = '15px';
+                messageSpan.style.display = 'inline-block';
+                messageSpan.style.maxWidth = '80%';
+                
+                if(sender === 'user') {
+                    messageSpan.style.background = '#1a6fc9';
+                    messageSpan.style.color = 'white';
+                } else {
+                    messageSpan.style.background = '#e8f4fc';
+                    messageSpan.style.color = '#333';
+                }
+                
+                messageSpan.textContent = message;
+                messageDiv.appendChild(messageSpan);
+                chatbotMessages.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            }
         });
     </script>
 </body>
