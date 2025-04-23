@@ -472,7 +472,9 @@
 
     <!-- Chatbot Container -->
     <div id="chatbot-container">
-        <iframe id="chatbot-iframe" src="https://agent.jotform.com/0195bf7a139274149d20a98efdf483b08976"></iframe>
+        <!-- Using a simple chatbot service - replace with your own iframe URL -->
+        <iframe id="chatbot-iframe" src="https://www.chatbase.co/chatbot-iframe/your-chatbot-id" 
+                title="CKD Assistant Chatbot" allow="microphone"></iframe>
         <button id="chatbot-toggle">💬</button>
     </div>
 
@@ -1195,6 +1197,17 @@
         // Initialize diabetes duration field
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('duration').disabled = true;
+            
+            // Add error handling for chatbot iframe
+            const chatbotIframe = document.getElementById('chatbot-iframe');
+            chatbotIframe.addEventListener('load', function() {
+                console.log('Chatbot loaded successfully');
+            });
+            chatbotIframe.addEventListener('error', function() {
+                console.error('Failed to load chatbot');
+                this.style.display = 'none';
+                alert('Chatbot service is currently unavailable. Please try again later.');
+            });
         });
     </script>
 </body>
