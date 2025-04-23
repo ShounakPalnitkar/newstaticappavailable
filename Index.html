@@ -48,6 +48,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
+            box-sizing: border-box;
         }
         
         button {
@@ -197,6 +198,7 @@
             display: flex;
             gap: 10px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
         
         .download-btn {
@@ -236,9 +238,47 @@
             display: inline;
         }
         
+        /* Form validation styles */
+        input:invalid, select:invalid {
+            border-color: #e74c3c;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #1a6fc9;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         @media (max-width: 600px) {
             .visualization-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .download-buttons {
+                flex-direction: column;
+            }
+            
+            #chatbot-iframe {
+                width: 280px;
+                height: 400px;
             }
         }
     </style>
@@ -260,6 +300,7 @@
         <form id="ckd-form">
             <label for="age">Age (years):</label>
             <input type="number" id="age" name="age" min="18" max="120" required>
+            <div id="age-error" class="error-message">Please enter a valid age between 18 and 120</div>
             
             <label for="sex">Sex:</label>
             <select id="sex" name="sex" required>
@@ -267,6 +308,7 @@
                 <option value="male">Male</option>
                 <option value="female">Female</option>
             </select>
+            <div id="sex-error" class="error-message">Please select your sex</div>
             
             <label for="race">Race/Ethnicity:</label>
             <select id="race" name="race" required>
@@ -278,6 +320,7 @@
                 <option value="native">Native American</option>
                 <option value="other">Other</option>
             </select>
+            <div id="race-error" class="error-message">Please select your race/ethnicity</div>
             
             <h3>Medical History</h3>
             
@@ -288,6 +331,7 @@
                 <option value="yes">Yes</option>
                 <option value="borderline">Borderline/Prehypertension</option>
             </select>
+            <div id="hypertension-error" class="error-message">Please select an option</div>
             
             <label for="diabetes">Do you have diabetes?</label>
             <select id="diabetes" name="diabetes" required>
@@ -297,9 +341,11 @@
                 <option value="type1">Type 1 Diabetes</option>
                 <option value="prediabetes">Prediabetes</option>
             </select>
+            <div id="diabetes-error" class="error-message">Please select an option</div>
             
             <label for="duration">If diabetic, how many years since diagnosis?</label>
-            <input type="number" id="duration" name="duration" min="0" max="100" value="0">
+            <input type="number" id="duration" name="duration" min="0" max="100" value="0" disabled>
+            <div id="duration-error" class="error-message">Please enter a valid duration</div>
             
             <label for="family_history">Family history of kidney disease?</label>
             <select id="family_history" name="family_history" required>
@@ -307,9 +353,11 @@
                 <option value="no">No</option>
                 <option value="yes">Yes (parents or siblings)</option>
             </select>
+            <div id="family-history-error" class="error-message">Please select an option</div>
             
             <label for="bmi">Body Mass Index (BMI):</label>
             <input type="number" id="bmi" name="bmi" min="15" max="60" step="0.1" required>
+            <div id="bmi-error" class="error-message">Please enter a valid BMI between 15 and 60</div>
             
             <label for="smoking">Smoking status:</label>
             <select id="smoking" name="smoking" required>
@@ -318,6 +366,7 @@
                 <option value="former">Former smoker</option>
                 <option value="current">Current smoker</option>
             </select>
+            <div id="smoking-error" class="error-message">Please select your smoking status</div>
             
             <label for="cardiovascular">History of cardiovascular disease?</label>
             <select id="cardiovascular" name="cardiovascular" required>
@@ -325,6 +374,7 @@
                 <option value="no">No</option>
                 <option value="yes">Yes</option>
             </select>
+            <div id="cardiovascular-error" class="error-message">Please select an option</div>
             
             <h3>Symptoms (Check all that apply)</h3>
             
@@ -355,7 +405,8 @@
                 </div>
             </div>
             
-            <button type="submit">Calculate My CKD Risk</button>
+            <div class="spinner" id="form-spinner"></div>
+            <button type="submit" id="submit-btn">Calculate My CKD Risk</button>
         </form>
     </section>
 
@@ -433,9 +484,123 @@
         // Initialize jsPDF
         const { jsPDF } = window.jspdf;
         
+        // Form validation
+        function validateForm() {
+            let isValid = true;
+            
+            // Validate age
+            const age = document.getElementById('age');
+            if (!age.value || age.value < 18 || age.value > 120) {
+                document.getElementById('age-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('age-error').style.display = 'none';
+            }
+            
+            // Validate sex
+            const sex = document.getElementById('sex');
+            if (!sex.value) {
+                document.getElementById('sex-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('sex-error').style.display = 'none';
+            }
+            
+            // Validate race
+            const race = document.getElementById('race');
+            if (!race.value) {
+                document.getElementById('race-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('race-error').style.display = 'none';
+            }
+            
+            // Validate hypertension
+            const hypertension = document.getElementById('hypertension');
+            if (!hypertension.value) {
+                document.getElementById('hypertension-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('hypertension-error').style.display = 'none';
+            }
+            
+            // Validate diabetes
+            const diabetes = document.getElementById('diabetes');
+            if (!diabetes.value) {
+                document.getElementById('diabetes-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('diabetes-error').style.display = 'none';
+            }
+            
+            // Validate duration if diabetes is present
+            const duration = document.getElementById('duration');
+            if ((diabetes.value === 'type1' || diabetes.value === 'type2') && 
+                (!duration.value || duration.value < 0 || duration.value > 100)) {
+                document.getElementById('duration-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('duration-error').style.display = 'none';
+            }
+            
+            // Validate family history
+            const familyHistory = document.getElementById('family_history');
+            if (!familyHistory.value) {
+                document.getElementById('family-history-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('family-history-error').style.display = 'none';
+            }
+            
+            // Validate BMI
+            const bmi = document.getElementById('bmi');
+            if (!bmi.value || bmi.value < 15 || bmi.value > 60) {
+                document.getElementById('bmi-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('bmi-error').style.display = 'none';
+            }
+            
+            // Validate smoking
+            const smoking = document.getElementById('smoking');
+            if (!smoking.value) {
+                document.getElementById('smoking-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('smoking-error').style.display = 'none';
+            }
+            
+            // Validate cardiovascular
+            const cardiovascular = document.getElementById('cardiovascular');
+            if (!cardiovascular.value) {
+                document.getElementById('cardiovascular-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('cardiovascular-error').style.display = 'none';
+            }
+            
+            return isValid;
+        }
+        
         document.getElementById('ckd-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            // Validate form before processing
+            if (!validateForm()) {
+                return;
+            }
+            
+            // Show loading spinner
+            const spinner = document.getElementById('form-spinner');
+            const submitBtn = document.getElementById('submit-btn');
+            spinner.style.display = 'block';
+            submitBtn.disabled = true;
+            
+            // Simulate processing delay (remove in production)
+            setTimeout(processFormData, 1000);
+        });
+        
+        function processFormData() {
             // Gather form data
             const age = parseInt(document.getElementById('age').value);
             const sex = document.getElementById('sex').value;
@@ -601,32 +766,40 @@
                 symptoms
             };
             
+            // Hide spinner and re-enable button
+            document.getElementById('form-spinner').style.display = 'none';
+            document.getElementById('submit-btn').disabled = false;
+            
             // Display results
+            displayResults();
+        }
+        
+        function displayResults() {
             const riskMessage = document.getElementById('risk-message');
             riskMessage.innerHTML = `
-                <p>Your calculated CKD risk score: <strong>${riskScore}/20</strong></p>
-                <p>Risk level: <span class="risk-${riskLevel}">${riskLevel.toUpperCase()}</span></p>
-                <p>Estimated 5-year risk of developing CKD: ${riskPercentage}</p>
+                <p>Your calculated CKD risk score: <strong>${userRiskData.riskScore}/20</strong></p>
+                <p>Risk level: <span class="risk-${userRiskData.riskLevel}">${userRiskData.riskLevel.toUpperCase()}</span></p>
+                <p>Estimated 5-year risk of developing CKD: ${userRiskData.riskPercentage}</p>
             `;
             
             const riskExplanation = document.getElementById('risk-explanation');
             riskExplanation.innerHTML = `
                 <h3>Key Risk Factors Identified:</h3>
                 <ul>
-                    ${age >= 50 ? `<li>Age (${age} years)</li>` : ''}
-                    ${race === 'black' ? '<li>African American ethnicity</li>' : ''}
-                    ${hypertension !== 'no' ? `<li>${hypertension === 'yes' ? 'Hypertension' : 'Borderline hypertension'}</li>` : ''}
-                    ${diabetes !== 'no' ? `<li>${diabetes === 'type1' ? 'Type 1 Diabetes' : diabetes === 'type2' ? 'Type 2 Diabetes' : 'Prediabetes'}${duration > 0 ? ` (${duration} years)` : ''}</li>` : ''}
-                    ${family_history === 'yes' ? '<li>Family history of kidney disease</li>' : ''}
-                    ${bmi >= 30 ? `<li>Obesity (BMI ${bmi})</li>` : bmi >= 25 ? `<li>Overweight (BMI ${bmi})</li>` : ''}
-                    ${smoking === 'current' ? '<li>Current smoker</li>' : smoking === 'former' ? '<li>Former smoker</li>' : ''}
-                    ${cardiovascular === 'yes' ? '<li>History of cardiovascular disease</li>' : ''}
-                    ${symptoms > 0 ? `<li>${symptoms} potential CKD symptom(s)</li>` : ''}
+                    ${userRiskData.age >= 50 ? `<li>Age (${userRiskData.age} years)</li>` : ''}
+                    ${userRiskData.race === 'black' ? '<li>African American ethnicity</li>' : ''}
+                    ${userRiskData.hypertension !== 'no' ? `<li>${userRiskData.hypertension === 'yes' ? 'Hypertension' : 'Borderline hypertension'}</li>` : ''}
+                    ${userRiskData.diabetes !== 'no' ? `<li>${userRiskData.diabetes === 'type1' ? 'Type 1 Diabetes' : userRiskData.diabetes === 'type2' ? 'Type 2 Diabetes' : 'Prediabetes'}${userRiskData.duration > 0 ? ` (${userRiskData.duration} years)` : ''}</li>` : ''}
+                    ${userRiskData.family_history === 'yes' ? '<li>Family history of kidney disease</li>' : ''}
+                    ${userRiskData.bmi >= 30 ? `<li>Obesity (BMI ${userRiskData.bmi})</li>` : userRiskData.bmi >= 25 ? `<li>Overweight (BMI ${userRiskData.bmi})</li>` : ''}
+                    ${userRiskData.smoking === 'current' ? '<li>Current smoker</li>' : userRiskData.smoking === 'former' ? '<li>Former smoker</li>' : ''}
+                    ${userRiskData.cardiovascular === 'yes' ? '<li>History of cardiovascular disease</li>' : ''}
+                    ${userRiskData.symptoms > 0 ? `<li>${userRiskData.symptoms} potential CKD symptom(s)</li>` : ''}
                 </ul>
             `;
             
             const advice = document.getElementById('advice');
-            if (riskLevel === 'high') {
+            if (userRiskData.riskLevel === 'high') {
                 advice.innerHTML = `
                     <h3>Recommendations:</h3>
                     <p>You have several risk factors for chronic kidney disease. We strongly recommend:</p>
@@ -640,7 +813,7 @@
                         <li>Weight management if overweight</li>
                     </ul>
                 `;
-            } else if (riskLevel === 'moderate') {
+            } else if (userRiskData.riskLevel === 'moderate') {
                 advice.innerHTML = `
                     <h3>Recommendations:</h3>
                     <p>You have some risk factors for chronic kidney disease. We recommend:</p>
@@ -676,7 +849,7 @@
             
             // Scroll to results
             document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
-        });
+        }
         
         // Function to create all visualizations
         function createVisualizations() {
@@ -916,6 +1089,10 @@
         // Download report as PDF
         document.getElementById('download-pdf').addEventListener('click', function() {
             const element = document.getElementById('visualization-content');
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner';
+            element.appendChild(spinner);
+            spinner.style.display = 'block';
             
             html2canvas(element, {
                 scale: 2,
@@ -942,12 +1119,23 @@
                 }
                 
                 pdf.save('ckd-risk-report.pdf');
+                spinner.style.display = 'none';
+                element.removeChild(spinner);
+            }).catch(err => {
+                console.error('Error generating PDF:', err);
+                alert('Error generating PDF. Please try again.');
+                spinner.style.display = 'none';
+                element.removeChild(spinner);
             });
         });
         
         // Download report as image
         document.getElementById('download-image').addEventListener('click', function() {
             const element = document.getElementById('visualization-content');
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner';
+            element.appendChild(spinner);
+            spinner.style.display = 'block';
             
             html2canvas(element, {
                 scale: 2,
@@ -958,6 +1146,13 @@
                 link.download = 'ckd-risk-assessment.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
+                spinner.style.display = 'none';
+                element.removeChild(spinner);
+            }).catch(err => {
+                console.error('Error generating image:', err);
+                alert('Error generating image. Please try again.');
+                spinner.style.display = 'none';
+                element.removeChild(spinner);
             });
         });
         
@@ -973,6 +1168,9 @@
                 if (chart) chart.destroy();
             });
             riskCharts = {};
+            
+            // Reset diabetes duration field
+            document.getElementById('duration').disabled = true;
         });
         
         // Show/hide diabetes duration based on diabetes status
@@ -992,6 +1190,11 @@
         document.getElementById('chatbot-toggle').addEventListener('click', function() {
             const container = document.getElementById('chatbot-container');
             container.classList.toggle('chatbot-visible');
+        });
+        
+        // Initialize diabetes duration field
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('duration').disabled = true;
         });
     </script>
 </body>
