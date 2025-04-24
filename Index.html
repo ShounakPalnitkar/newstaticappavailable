@@ -312,8 +312,86 @@
     <section class="form-section">
         <h2>Patient Information</h2>
         <form id="ckd-form">
-            <!-- [All your existing form elements remain exactly the same] -->
-            <!-- ... -->
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" min="18" max="120" required>
+            
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+            
+            <label for="height">Height (cm):</label>
+            <input type="number" id="height" name="height" min="100" max="250" required>
+            
+            <label for="weight">Weight (kg):</label>
+            <input type="number" id="weight" name="weight" min="30" max="300" step="0.1" required>
+            
+            <label for="diabetes">Do you have diabetes?</label>
+            <select id="diabetes" name="diabetes" required>
+                <option value="">Select</option>
+                <option value="no">No</option>
+                <option value="type1">Type 1 Diabetes</option>
+                <option value="type2">Type 2 Diabetes</option>
+            </select>
+            
+            <label for="hypertension">Do you have high blood pressure (hypertension)?</label>
+            <select id="hypertension" name="hypertension" required>
+                <option value="">Select</option>
+                <option value="no">No</option>
+                <option value="controlled">Yes, controlled with medication</option>
+                <option value="uncontrolled">Yes, uncontrolled</option>
+            </select>
+            
+            <label for="family-history">Family history of kidney disease?</label>
+            <select id="family-history" name="family-history" required>
+                <option value="">Select</option>
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+            </select>
+            
+            <label for="smoking">Smoking status:</label>
+            <select id="smoking" name="smoking" required>
+                <option value="">Select</option>
+                <option value="never">Never smoked</option>
+                <option value="former">Former smoker</option>
+                <option value="current">Current smoker</option>
+            </select>
+            
+            <label for="egfr">Estimated GFR (if known):</label>
+            <input type="number" id="egfr" name="egfr" min="5" max="150" placeholder="Leave blank if unknown">
+            
+            <label for="creatinine">Serum Creatinine (mg/dL):</label>
+            <input type="number" id="creatinine" name="creatinine" min="0.1" max="20" step="0.01" placeholder="Leave blank if unknown">
+            
+            <label for="albuminuria">Albuminuria (urine albumin-to-creatinine ratio in mg/g):</label>
+            <input type="number" id="albuminuria" name="albuminuria" min="0" max="5000" placeholder="Leave blank if unknown">
+            
+            <label>Symptoms (check all that apply):</label>
+            <div class="symptom-checkboxes">
+                <div class="symptom-checkbox">
+                    <input type="checkbox" id="fatigue" name="symptoms" value="fatigue">
+                    <label for="fatigue">Fatigue or weakness</label>
+                </div>
+                <div class="symptom-checkbox">
+                    <input type="checkbox" id="swelling" name="symptoms" value="swelling">
+                    <label for="swelling">Swelling in feet/ankles</label>
+                </div>
+                <div class="symptom-checkbox">
+                    <input type="checkbox" id="appetite" name="symptoms" value="appetite">
+                    <label for="appetite">Poor appetite</label>
+                </div>
+                <div class="symptom-checkbox">
+                    <input type="checkbox" id="sleep" name="symptoms" value="sleep">
+                    <label for="sleep">Trouble sleeping</label>
+                </div>
+                <div class="symptom-checkbox">
+                    <input type="checkbox" id="urination" name="symptoms" value="urination">
+                    <label for="urination">Changes in urination</label>
+                </div>
+            </div>
             
             <div class="spinner" id="form-spinner"></div>
             <button type="submit" id="submit-btn">Calculate My CKD Risk</button>
@@ -321,13 +399,55 @@
     </section>
 
     <section id="result" class="hidden">
-        <!-- [All your existing result elements remain exactly the same] -->
-        <!-- ... -->
+        <h2>Your CKD Risk Assessment</h2>
+        <div id="risk-level" class="risk-medium">
+            <p>Calculating your risk level...</p>
+        </div>
+        
+        <div id="risk-description"></div>
+        
+        <div class="additional-info">
+            <h3>What This Means</h3>
+            <p id="risk-explanation"></p>
+        </div>
+        
+        <div class="risk-factors" id="key-factors">
+            <!-- Risk factors will be populated here -->
+        </div>
+        
+        <div class="download-buttons">
+            <button id="download-pdf" class="download-btn">Download PDF Report</button>
+            <button id="download-image" class="download-btn">Download Image Report</button>
+        </div>
     </section>
 
     <section id="visualizations" class="hidden">
-        <!-- [All your existing visualization elements remain exactly the same] -->
-        <!-- ... -->
+        <h2>Risk Factor Analysis</h2>
+        
+        <div class="visualization-grid">
+            <div class="chart-container">
+                <h3>Your CKD Risk Level</h3>
+                <div class="chart" id="risk-chart">
+                    <div class="chart-bar" id="risk-bar" style="height: 0%"></div>
+                </div>
+                <div class="chart-label" id="risk-percentage">0%</div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Key Contributing Factors</h3>
+                <canvas id="factors-chart"></canvas>
+            </div>
+        </div>
+        
+        <div class="additional-info">
+            <h3>Next Steps</h3>
+            <ul id="next-steps">
+                <li>Consult with your healthcare provider about these results</li>
+                <li>Get regular check-ups to monitor kidney function</li>
+                <li>Manage underlying conditions like diabetes and hypertension</li>
+                <li>Maintain a healthy diet and exercise routine</li>
+            </ul>
+        </div>
     </section>
 
     <footer>
@@ -356,11 +476,375 @@
     </div>
 
     <script>
-        // [All your existing CKD calculation JavaScript remains the same]
-        // ...
-
-        // Enhanced Chatbot Implementation
         document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('ckd-form');
+            const resultSection = document.getElementById('result');
+            const visualizationSection = document.getElementById('visualizations');
+            const spinner = document.getElementById('form-spinner');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            // Form submission handler
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show loading spinner
+                spinner.style.display = 'block';
+                submitBtn.disabled = true;
+                
+                // Simulate processing delay
+                setTimeout(function() {
+                    calculateCkdRisk();
+                    spinner.style.display = 'none';
+                    submitBtn.disabled = false;
+                }, 1500);
+            });
+            
+            // CKD Risk Calculation Function
+            function calculateCkdRisk() {
+                // Get form values
+                const age = parseInt(document.getElementById('age').value);
+                const gender = document.getElementById('gender').value;
+                const height = parseFloat(document.getElementById('height').value);
+                const weight = parseFloat(document.getElementById('weight').value);
+                const diabetes = document.getElementById('diabetes').value;
+                const hypertension = document.getElementById('hypertension').value;
+                const familyHistory = document.getElementById('family-history').value;
+                const smoking = document.getElementById('smoking').value;
+                const egfr = document.getElementById('egfr').value ? parseFloat(document.getElementById('egfr').value) : null;
+                const creatinine = document.getElementById('creatinine').value ? parseFloat(document.getElementById('creatinine').value) : null;
+                const albuminuria = document.getElementById('albuminuria').value ? parseFloat(document.getElementById('albuminuria').value) : null;
+                
+                // Get symptoms
+                const symptoms = [];
+                document.querySelectorAll('input[name="symptoms"]:checked').forEach(checkbox => {
+                    symptoms.push(checkbox.value);
+                });
+                
+                // Calculate BMI
+                const bmi = weight / Math.pow(height / 100, 2);
+                
+                // Calculate risk score (simplified for demo)
+                let riskScore = 0;
+                const factors = [];
+                
+                // Age factor
+                if (age >= 60) {
+                    riskScore += 20;
+                    factors.push({name: "Age (60+)", value: 20});
+                } else if (age >= 40) {
+                    riskScore += 10;
+                    factors.push({name: "Age (40-59)", value: 10});
+                }
+                
+                // Diabetes factor
+                if (diabetes === 'type1' || diabetes === 'type2') {
+                    riskScore += 30;
+                    factors.push({name: "Diabetes", value: 30});
+                }
+                
+                // Hypertension factor
+                if (hypertension === 'uncontrolled') {
+                    riskScore += 25;
+                    factors.push({name: "Uncontrolled Hypertension", value: 25});
+                } else if (hypertension === 'controlled') {
+                    riskScore += 15;
+                    factors.push({name: "Controlled Hypertension", value: 15});
+                }
+                
+                // Family history
+                if (familyHistory === 'yes') {
+                    riskScore += 10;
+                    factors.push({name: "Family History", value: 10});
+                }
+                
+                // Smoking
+                if (smoking === 'current') {
+                    riskScore += 15;
+                    factors.push({name: "Current Smoker", value: 15});
+                } else if (smoking === 'former') {
+                    riskScore += 5;
+                    factors.push({name: "Former Smoker", value: 5});
+                }
+                
+                // BMI
+                if (bmi >= 30) {
+                    riskScore += 10;
+                    factors.push({name: "Obesity (BMI ≥30)", value: 10});
+                } else if (bmi >= 25) {
+                    riskScore += 5;
+                    factors.push({name: "Overweight (BMI 25-29.9)", value: 5});
+                }
+                
+                // Symptoms (each adds 5 points)
+                if (symptoms.length > 0) {
+                    riskScore += symptoms.length * 5;
+                    factors.push({name: `Symptoms (${symptoms.length})`, value: symptoms.length * 5});
+                }
+                
+                // Lab values if provided
+                if (egfr !== null) {
+                    if (egfr < 30) {
+                        riskScore += 40;
+                        factors.push({name: "eGFR <30 (Stage 4-5 CKD)", value: 40});
+                    } else if (egfr < 60) {
+                        riskScore += 30;
+                        factors.push({name: "eGFR 30-59 (Stage 3 CKD)", value: 30});
+                    } else if (egfr < 90) {
+                        riskScore += 10;
+                        factors.push({name: "eGFR 60-89 (Stage 2 CKD)", value: 10});
+                    }
+                }
+                
+                if (creatinine !== null && creatinine > 1.2) {
+                    riskScore += 15;
+                    factors.push({name: "Elevated Creatinine", value: 15});
+                }
+                
+                if (albuminuria !== null) {
+                    if (albuminuria >= 300) {
+                        riskScore += 30;
+                        factors.push({name: "Severe Albuminuria (≥300 mg/g)", value: 30});
+                    } else if (albuminuria >= 30) {
+                        riskScore += 15;
+                        factors.push({name: "Moderate Albuminuria (30-299 mg/g)", value: 15});
+                    }
+                }
+                
+                // Cap the risk score at 100
+                riskScore = Math.min(riskScore, 100);
+                
+                // Determine risk level
+                let riskLevel, riskClass, explanation, recommendations;
+                
+                if (riskScore >= 60) {
+                    riskLevel = "High Risk";
+                    riskClass = "risk-high";
+                    explanation = "You have multiple risk factors for chronic kidney disease. Your risk of developing CKD or having existing CKD is high. It's important to consult with a healthcare provider for proper evaluation and management.";
+                    recommendations = [
+                        "Schedule an appointment with a nephrologist (kidney specialist)",
+                        "Get comprehensive kidney function tests",
+                        "Manage underlying conditions aggressively",
+                        "Review all medications with your doctor",
+                        "Consider dietary modifications"
+                    ];
+                } else if (riskScore >= 30) {
+                    riskLevel = "Moderate Risk";
+                    riskClass = "risk-medium";
+                    explanation = "You have several risk factors for chronic kidney disease. While you may not have CKD now, you're at increased risk of developing it. Regular monitoring and preventive measures are recommended.";
+                    recommendations = [
+                        "Discuss these results with your primary care physician",
+                        "Get annual kidney function tests",
+                        "Control blood pressure and blood sugar",
+                        "Maintain a healthy weight",
+                        "Avoid NSAIDs and other kidney-stressing medications"
+                    ];
+                } else {
+                    riskLevel = "Low Risk";
+                    riskClass = "risk-low";
+                    explanation = "Your current risk for chronic kidney disease appears low based on the information provided. However, continue to monitor risk factors and maintain healthy habits to protect your kidney health.";
+                    recommendations = [
+                        "Continue regular health check-ups",
+                        "Maintain a balanced diet and exercise routine",
+                        "Stay hydrated",
+                        "Monitor blood pressure periodically",
+                        "Avoid excessive use of pain medications"
+                    ];
+                }
+                
+                // Display results
+                document.getElementById('risk-level').innerHTML = `<p>Your CKD Risk: <span class="${riskClass}">${riskLevel}</span></p>`;
+                document.getElementById('risk-level').className = riskClass;
+                document.getElementById('risk-description').innerHTML = `<p>Your calculated risk score is ${riskScore}/100.</p>`;
+                document.getElementById('risk-explanation').textContent = explanation;
+                
+                // Display key factors
+                const keyFactorsContainer = document.getElementById('key-factors');
+                keyFactorsContainer.innerHTML = '<h3>Key Risk Factors</h3>';
+                
+                // Sort factors by impact
+                factors.sort((a, b) => b.value - a.value);
+                
+                // Display top 5 factors
+                factors.slice(0, 5).forEach(factor => {
+                    const factorClass = factor.value >= 20 ? 'high' : (factor.value >= 10 ? 'medium' : '');
+                    const factorEl = document.createElement('div');
+                    factorEl.className = `risk-factor ${factorClass}`;
+                    factorEl.textContent = `${factor.name}: +${factor.value} points`;
+                    keyFactorsContainer.appendChild(factorEl);
+                });
+                
+                // Update recommendations
+                const nextStepsList = document.getElementById('next-steps');
+                nextStepsList.innerHTML = '';
+                recommendations.forEach(rec => {
+                    const li = document.createElement('li');
+                    li.textContent = rec;
+                    nextStepsList.appendChild(li);
+                });
+                
+                // Show results and visualizations
+                resultSection.classList.remove('hidden');
+                visualizationSection.classList.remove('hidden');
+                
+                // Scroll to results
+                resultSection.scrollIntoView({behavior: 'smooth'});
+                
+                // Update visualizations
+                updateVisualizations(riskScore, factors);
+            }
+            
+            // Update visualizations
+            function updateVisualizations(riskScore, factors) {
+                // Risk percentage bar
+                const riskBar = document.getElementById('risk-bar');
+                const riskPercentage = document.getElementById('risk-percentage');
+                riskBar.style.height = `${riskScore}%`;
+                riskPercentage.textContent = `${riskScore}% Risk`;
+                
+                // Set bar color based on risk level
+                if (riskScore >= 60) {
+                    riskBar.style.backgroundColor = '#e74c3c';
+                } else if (riskScore >= 30) {
+                    riskBar.style.backgroundColor = '#f39c12';
+                } else {
+                    riskBar.style.backgroundColor = '#27ae60';
+                }
+                
+                // Factors chart
+                const ctx = document.getElementById('factors-chart').getContext('2d');
+                
+                // Sort factors by value for the chart
+                const sortedFactors = [...factors].sort((a, b) => b.value - a.value).slice(0, 5);
+                
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: sortedFactors.map(f => f.name),
+                        datasets: [{
+                            label: 'Risk Contribution (points)',
+                            data: sortedFactors.map(f => f.value),
+                            backgroundColor: [
+                                '#e74c3c',
+                                '#f39c12',
+                                '#1a6fc9',
+                                '#2ecc71',
+                                '#9b59b6'
+                            ],
+                            borderColor: [
+                                '#c0392b',
+                                '#d35400',
+                                '#145da0',
+                                '#27ae60',
+                                '#8e44ad'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: Math.max(...sortedFactors.map(f => f.value)) + 10
+                            }
+                        }
+                    }
+                });
+                
+                // Set up download buttons
+                document.getElementById('download-pdf').addEventListener('click', generatePDF);
+                document.getElementById('download-image').addEventListener('click', generateImage);
+            }
+            
+            // Generate PDF report
+            function generatePDF() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Add title
+                doc.setFontSize(20);
+                doc.setTextColor(26, 111, 201);
+                doc.text('Chronic Kidney Disease Risk Report', 105, 20, {align: 'center'});
+                
+                // Add date
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 105, 30, {align: 'center'});
+                
+                // Add risk level
+                const riskLevel = document.querySelector('#risk-level p').textContent;
+                const riskClass = document.getElementById('risk-level').className;
+                
+                doc.setFontSize(16);
+                if (riskClass.includes('high')) doc.setTextColor(231, 76, 60);
+                else if (riskClass.includes('medium')) doc.setTextColor(243, 156, 18);
+                else doc.setTextColor(39, 174, 96);
+                
+                doc.text(riskLevel, 20, 50);
+                
+                // Add risk description
+                doc.setFontSize(12);
+                doc.setTextColor(0, 0, 0);
+                doc.text(document.getElementById('risk-description').textContent, 20, 60, {maxWidth: 170});
+                
+                // Add key factors
+                doc.setFontSize(14);
+                doc.setTextColor(26, 111, 201);
+                doc.text('Key Risk Factors:', 20, 90);
+                
+                doc.setFontSize(12);
+                doc.setTextColor(0, 0, 0);
+                
+                const factors = document.querySelectorAll('.risk-factor');
+                let yPos = 100;
+                factors.forEach((factor, index) => {
+                    if (yPos > 250) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    doc.text(factor.textContent, 20, yPos);
+                    yPos += 10;
+                });
+                
+                // Add next steps
+                doc.setFontSize(14);
+                doc.setTextColor(26, 111, 201);
+                doc.text('Recommended Next Steps:', 20, yPos + 10);
+                
+                doc.setFontSize(12);
+                doc.setTextColor(0, 0, 0);
+                
+                const steps = document.querySelectorAll('#next-steps li');
+                yPos += 20;
+                steps.forEach((step, index) => {
+                    if (yPos > 250) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    doc.text(`• ${step.textContent}`, 20, yPos);
+                    yPos += 10;
+                });
+                
+                // Add disclaimer
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Disclaimer: This tool is for informational purposes only and is not a substitute for professional medical advice.', 105, 280, {align: 'center'});
+                
+                // Save the PDF
+                doc.save('CKD_Risk_Report.pdf');
+            }
+            
+            // Generate image report
+            function generateImage() {
+                html2canvas(document.getElementById('result')).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'CKD_Risk_Assessment.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                });
+            }
+            
+            // Enhanced Chatbot Implementation
             const chatbotIframe = document.getElementById('chatbot-iframe');
             const chatbotFallback = document.getElementById('chatbot-fallback');
             const chatbotToggle = document.getElementById('chatbot-toggle');
